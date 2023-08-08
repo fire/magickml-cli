@@ -64,6 +64,20 @@
     },
   });
 
+  var resultBox = blessed.box({
+    parent: screen,
+    top: '50%',
+    left: 0,
+    width: '100%',
+    height: '50%',
+    border: { type: 'line' },
+    style: {
+      fg: 'white',
+      bg: 'black',
+      border: { fg: 'blue' },
+    },
+  });
+  
   form.on("submit", (data) => {
     const { apiKey, entityId } = data;
 
@@ -78,8 +92,16 @@
           },
         }
       )
-      .then(({ data }) => console.log(data))
-      .catch((err) => console.error(err));
+      .then(({ data }) => {
+        // Update the content of the result box with the response data
+        resultBox.setContent(JSON.stringify(data, null, 2));
+        screen.render();
+      })
+      .catch((err) => {
+        // Update the content of the result box with the error message
+        resultBox.setContent('Error: ' + err.message);
+        screen.render();
+      });
   });
   var submitButton = blessed.button({
     parent: form,
