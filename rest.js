@@ -64,27 +64,45 @@
     },
   });
 
-  var resultBox = blessed.box({
+  var resultBox = blessed.scrollabletext({
     parent: screen,
-    top: '50%',
+    top: "50%",
     left: 0,
-    width: '100%',
-    height: '50%',
-    border: { type: 'line' },
+    width: "100%",
+    height: "50%",
+    border: { type: "line" },
     style: {
-      fg: 'white',
-      bg: 'black',
-      border: { fg: 'blue' },
+      fg: "white",
+      bg: "black",
+      border: { fg: "blue" },
     },
+    keys: false,
+    vi: true,
+    alwaysScroll: true,
+    scrollbar: {
+      ch: ' ',
+      inverse: true
+    }
   });
+
+  resultBox.focusable = true;
+
+  screen.key(['tab'], function(ch, key) {
+    if (screen.focused === form) {
+      resultBox.focus();
+    } else {
+      form.focus();
+    }
+  });
+
   var exitInstructions = blessed.text({
     parent: screen,
-    top: '90%',
-    left: 'center',
+    top: "90%",
+    left: "center",
     content: 'Press "escape" or "C-c" to exit at any time.',
     style: {
-      fg: 'white',
-      bg: 'black',
+      fg: "white",
+      bg: "black",
     },
   });
   form.on("submit", (data) => {
@@ -93,7 +111,7 @@
     storage.setItem("apiKey", apiKey);
     axios
       .get(
-        `https://api.crunchbase.com/api/v4/entities/organizations/${entityId}`,
+        `https://api.crunchbase.com/api/v4/entities/organizations/${entityId}?card_ids=founders,raised_funding_rounds&field_ids=categories,short_description,rank_org_company,founded_on,website,facebook,created_at`,
         {
           headers: {
             accept: "application/json",
@@ -108,14 +126,15 @@
       })
       .catch((err) => {
         // Update the content of the result box with the error message
-        resultBox.setContent('Error: ' + err.message);
+        resultBox.setContent("Error: " + err.message);
         screen.render();
       });
   });
+
   var submitButton = blessed.button({
     parent: form,
     mouse: true,
-    keys: true,
+    keys: false,
     shrink: true,
     padding: { left: 1, right: 1 },
     left: 0,
@@ -133,7 +152,7 @@
     },
   });
   let apiKey = await storage.getItem("apiKey");
-  apiKey = typeof apiKey === 'string' ? apiKey : '';
+  apiKey = typeof apiKey === "string" ? apiKey : "";
   await apiKeyBox.setValue(apiKey);
 
   submitButton.on("press", () => {
