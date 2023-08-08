@@ -1,0 +1,67 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: MagickML API Service
+  description: A custom service for MagickML
+
+paths:
+  /api:
+    get:
+      summary: Get API response
+      parameters:
+        - name: spellId
+          in: query
+          required: true
+          type: string
+          description: The ID of the spell to run
+        - name: content
+          in: query
+          required: true
+          type: string
+          description: The content to process
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Error occurred
+          schema:
+            $ref: '#/definitions/ApiError'
+    post:
+      summary: Create API response
+      parameters:
+        - name: spellId
+          in: query
+          required: true
+          type: string
+          description: The ID of the spell to run
+        - name: content
+          in: query
+          required: true
+          type: string
+          description: The content to process
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Error occurred
+          schema:
+            $ref: '#/definitions/ApiError'
+
+definitions:
+  ApiResponse:
+    type: object
+    properties:
+      result:
+        type: object
+        description: The result of the API call
+  ApiError:
+    type: object
+    properties:
+      error:
+        type: string
+        description: The error message
+
