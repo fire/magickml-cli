@@ -77,7 +77,16 @@
       border: { fg: 'blue' },
     },
   });
-  
+  var exitInstructions = blessed.text({
+    parent: screen,
+    top: '90%',
+    left: 'center',
+    content: 'Press "escape" or "C-c" to exit at any time.',
+    style: {
+      fg: 'white',
+      bg: 'black',
+    },
+  });
   form.on("submit", (data) => {
     const { apiKey, entityId } = data;
 
@@ -131,7 +140,7 @@
     form.submit();
   });
 
-  screen.key(["escape", "q", "C-c"], function (ch, key) {
+  screen.key(["escape", "C-c"], function (ch, key) {
     return process.exit(0);
   });
 
